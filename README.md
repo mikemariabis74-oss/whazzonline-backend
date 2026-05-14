@@ -1,6 +1,6 @@
 # Whazzonline — Backend API
 
-REST API for the Whazzonline e-commerce platform. Built with Express, TypeScript, and Supabase.
+REST API for the Whazzonline e-commerce platform. Built with Express, TypeScript, and SQLite.
 
 ## Tech Stack
 
@@ -8,8 +8,8 @@ REST API for the Whazzonline e-commerce platform. Built with Express, TypeScript
 |---|---|---|
 | Runtime | Node.js + Express | Lightweight, widely supported, fast to iterate |
 | Language | TypeScript | Type safety across all routes and middleware |
-| Database | Supabase (PostgreSQL) | Managed DB with row-level security |
-| Auth | Supabase Auth + JWT | Industry-standard token-based auth |
+| Database | SQLite | Lightweight embedded database stored locally in `data/whazzonline.db` |
+| Auth | JWT Auth | Industry-standard token-based auth with bcrypt-secured passwords |
 | Validation | express-validator | Declarative input validation on every route |
 | Security | helmet, cors | HTTP header hardening and CORS control |
 
@@ -57,10 +57,13 @@ npm install
 ```bash
 cp .env.example .env
 ```
-Fill in your Supabase credentials from **Project Settings → API**.
+Update the `.env` file with your local settings:
+- `SQLITE_DB_PATH` for the SQLite file location (default: `./data/whazzonline.db`)
+- `JWT_SECRET` for signing auth tokens
+- `ALLOWED_ORIGIN` for the frontend origin
 
 ### 3. Set up the database
-Run `../whazzonline-frontend/supabase/schema.sql` and `seed.sql` in your Supabase SQL editor.
+The SQLite database initializes automatically on first run using the schema and seed data defined in the backend. If you want to reset the local database, delete `./data/whazzonline.db` and restart the server.
 
 ### 4. Start dev server
 ```bash
@@ -82,7 +85,7 @@ npm run dev
 All protected routes require a Bearer token in the Authorization header:
 
 ```
-Authorization: Bearer <supabase_access_token>
+Authorization: Bearer <jwt_token>
 ```
 
 Tokens are obtained from `POST /api/auth/login` and should be refreshed using `POST /api/auth/refresh` before expiry (default: 1 hour).
@@ -91,5 +94,5 @@ Tokens are obtained from `POST /api/auth/login` and should be refreshed using `P
 
 - No rate limiting (would add `express-rate-limit` in production)
 - No payment gateway integration (Paystack is the recommended next step for Nigeria)
-- No image upload endpoint (would use Supabase Storage)
+- No image upload endpoint (would use a separate storage service)
 - Orders are created with `status: pending` — no webhook for payment confirmation yet
