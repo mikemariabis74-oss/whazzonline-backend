@@ -39,8 +39,12 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: process.env.SWAGGER_BASE_URL || `http://localhost:${PORT}`,
-        description: 'Local server',
+        url: 'https://whazzonline-backend-m49z.onrender.com',
+        description: 'Production (Render)',
+      },
+      {
+        url: `http://localhost:${PORT}`,
+        description: 'Local Development',
       },
     ],
     components: {
